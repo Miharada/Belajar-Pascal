@@ -1,0 +1,56 @@
+#import numpy
+import numpy as np
+import matplotlib.pyplot as plt
+#data file
+content = ("gravity_corr.txt")
+
+def list_data(data,index):
+    h=[]
+    for x in data:
+        data = x.split("\n")[0]
+        data = data.split("\t")
+        h.append(data[index])
+    h.pop(0)
+    return h
+
+def hitung_koreksi_free_air(h):
+    dgfa = []
+    for i in h:
+        dgfa.append(float(i)*0.3086)
+    return dgfa
+
+def anomaly_free_air(dgfa, gcorr):
+    gfa = []
+    counter = 0
+    for i in dgfa:
+        hasil = (i)+ float(gcorr[counter])
+        counter+=1
+        gfa.append(hasil)
+    return gfa        
+
+def graphic_data(gfa,G):
+    plt.plot(gfa,G)
+    plt.scatter(gfa,G)
+
+with open(content,"r") as f: #read content file
+    data = f.readlines() #read all lines in content
+
+h = list_data(data,3)
+print(h)
+
+list_dgfa = hitung_koreksi_free_air(h)
+print(list_dgfa)
+
+list_gcorr = list_data(data,4)
+print(list_gcorr)
+
+list_gfa = anomaly_free_air(list_dgfa, list_gcorr)
+print(list_gfa)
+
+#graphic_data(list_gfa,h)
+
+G=[]
+for i in range(48):
+    G.append(i)
+
+graphic_data(list_gfa,G)
